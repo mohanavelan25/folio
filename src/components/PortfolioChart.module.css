@@ -1,25 +1,29 @@
 .wrap {
+  width: 100%;
+  height: 100%;
+  /* Important: Tells the chart to fill the App's chartSection */
+  display: flex;
+  flex-direction: column;
   position: relative;
-  z-index: 1;
-  padding: 1.25rem 2rem 0;
-  max-width: 1400px;
-  margin: 0 auto;
+  /* Remove any fixed heights or paddings here that might shrink the chart */
+  padding: 0;
 }
 
+/* If you use the 'inner' div from before, it must also be 100% */
 .inner {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 1.25rem 1.5rem;
-  height: 200px;
-  position: relative;
-  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  flex: 1;
 }
 
-.inner::before {
+/* Optional: Add a subtle glow to the chart area */
+.wrap::after {
   content: '';
   position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(62,207,207,0.025) 0%, transparent 55%);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   pointer-events: none;
+  background: radial-gradient(circle at 50% 0%, rgba(62, 207, 207, 0.05) 0%, transparent 70%);
 }

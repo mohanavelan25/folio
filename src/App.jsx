@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import './styles/global.css';
-
 import { usePortfolio } from './hooks/usePortfolio';
 
 import Navbar           from './components/Navbar';
@@ -26,7 +25,7 @@ export default function App() {
   const [range, setRange] = useState('3M');
 
   return (
-    <>
+    <div className="min-h-screen bg-[#0a0b0d] text-white">
       <Navbar
         onAdd={() => setModalOpen(true)}
         priceStatus={priceStatus}
@@ -36,29 +35,35 @@ export default function App() {
       />
 
       <main className={styles.main}>
+        {/* 1. Portfolio Header Stats */}
         <HeroSection
           stats={stats}
           activeRange={range}
           onRangeChange={setRange}
         />
 
-        <PortfolioChart
-          totalValue={stats.totalValue}
-          range={range}
-        />
+        {/* 2. Main Chart (Large/Long Version) */}
+        <div className={styles.chartContainer}>
+          <PortfolioChart
+            totalValue={stats.totalValue}
+            range={range}
+          />
+        </div>
 
-        <div className={`${styles.grid} anim-fade-slide-d2`}>
+        {/* 3. Secondary Stats Row (Allocation, Performance, Activity) */}
+        <div className={`${styles.cardGrid} anim-fade-slide-d2`}>
+          <AllocationCard holdings={holdings} />
+          <PerformanceCard stats={stats} />
+          <ActivityCard activity={activity} />
+        </div>
+
+        {/* 4. Detailed Holdings Table */}
+        <section className={`${styles.tableSection} anim-fade-slide-d3`}>
           <HoldingsTable
             holdings={holdings}
             onRemove={removeHolding}
           />
-
-          <aside className={styles.sidebar}>
-            <AllocationCard holdings={holdings} />
-            <PerformanceCard stats={stats} />
-            <ActivityCard activity={activity} />
-          </aside>
-        </div>
+        </section>
       </main>
 
       <AddPositionModal
@@ -66,6 +71,6 @@ export default function App() {
         onClose={() => setModalOpen(false)}
         onAdd={addHolding}
       />
-    </>
+    </div>
   );
 }

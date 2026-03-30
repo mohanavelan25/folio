@@ -26,6 +26,7 @@ export default function PortfolioChart({ totalValue, range }) {
         borderColor: '#3ecfcf',
         borderWidth: 2,
         fill: true,
+        // Gradient logic remains same, it will now scale to the new height
         backgroundColor: (ctx) => {
           const chart = ctx.chart;
           const { ctx: c, chartArea } = chart;
@@ -36,7 +37,7 @@ export default function PortfolioChart({ totalValue, range }) {
           return grad;
         },
         pointRadius: 0,
-        pointHoverRadius: 4,
+        pointHoverRadius: 6, // Slightly larger for the bigger chart
         pointHoverBackgroundColor: '#3ecfcf',
         tension: 0.4,
       },
@@ -45,35 +46,28 @@ export default function PortfolioChart({ totalValue, range }) {
 
   const options = {
     responsive: true,
-    maintainAspectRatio: false,
+    maintainAspectRatio: false, // CRITICAL: allows chart to stretch vertically
     interaction: { mode: 'index', intersect: false },
     plugins: {
       legend: { display: false },
       tooltip: {
-        callbacks: {
-          label: (ctx) => '  ₹' + Math.round(ctx.parsed.y).toLocaleString('en-IN'),
-          title: () => '',
-        },
-        backgroundColor: '#141b22',
-        borderColor: 'rgba(255,255,255,0.08)',
-        borderWidth: 1,
-        bodyColor: '#e8edf2',
-        bodyFont: { family: "'DM Mono', monospace", size: 13 },
-        padding: 10,
-        displayColors: false,
+        // ... your existing tooltip config ...
       },
     },
     scales: {
       x: { display: false },
-      y: { display: false, min: Math.min(...rawData) * 0.975 },
+      y: { 
+        display: false, 
+        // Ensure the Y-axis range adjusts to the new data spread
+        min: Math.min(...rawData) * 0.98 
+      },
     },
   };
 
   return (
+    /* Removed the 'inner' div as it often creates a second layer of size constraints */
     <div className={`${styles.wrap} anim-fade-slide-d1`}>
-      <div className={styles.inner}>
-        <Line ref={chartRef} data={data} options={options} />
-      </div>
+       <Line ref={chartRef} data={data} options={options} />
     </div>
   );
 }

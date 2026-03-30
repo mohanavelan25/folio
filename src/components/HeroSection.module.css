@@ -1,98 +1,133 @@
 .hero {
   position: relative;
   z-index: 1;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem 0 0;
+  /* Reduced top padding as App.jsx handles main padding */
+}
+
+.mainContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  padding: 2.5rem 2rem 0;
-  max-width: 1400px;
-  margin: 0 auto;
-  gap: 2rem;
 }
 
 .label {
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--muted);
-  margin-bottom: 0.45rem;
+  margin-bottom: 0.75rem;
 }
 
 .value {
-  /* font-family: var(--mono); */
-  font-size: 2.5rem;
-  font-weight: 300;
-  letter-spacing: -0.02em;
+  font-size: 3.5rem;
+  /* Increased size for full-width impact */
+  font-weight: 600;
+  letter-spacing: -0.03em;
   color: var(--text);
   line-height: 1;
+  display: flex;
+  align-items: baseline;
 }
 
 .currency {
-  font-size: 1.7rem;
+  font-size: 2.2rem;
   color: var(--muted);
   font-weight: 300;
-  margin-right: 0.15rem;
+  margin-right: 0.4rem;
 }
 
 .change {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  margin-top: 0.7rem;
+  gap: 0.6rem;
+  margin-top: 1rem;
   font-family: var(--mono);
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   font-weight: 500;
 }
 
-.up   { color: var(--green); }
-.down { color: var(--red); }
-.neg  { color: var(--red); }
-.pos  { color: var(--green); }
-.neutral { color: var(--text); }
-
-.badge {
-  font-size: 0.7rem;
-  padding: 0.18rem 0.55rem;
-  border-radius: 20px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+.up {
+  color: var(--green);
 }
 
-.up .badge   { background: rgba(45,212,160,0.12); color: var(--green); }
-.down .badge { background: rgba(240,90,110,0.12); color: var(--red); }
+.down {
+  color: var(--red);
+}
+
+.neg {
+  color: var(--red);
+}
+
+.pos {
+  color: var(--green);
+}
+
+.neutral {
+  color: var(--text);
+}
+
+.badge {
+  font-size: 0.85rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.up .badge {
+  background: rgba(45, 212, 160, 0.1);
+  color: var(--green);
+}
+
+.down .badge {
+  background: rgba(240, 90, 110, 0.1);
+  color: var(--red);
+}
 
 .sub {
-  font-size: 0.73rem;
+  font-size: 0.85rem;
   color: var(--muted);
-  font-family: var(--font);
   font-weight: 400;
 }
 
 .meta {
   display: flex;
-  gap: 2.5rem;
-  margin-top: 1.5rem;
+  gap: 4rem;
+  /* Spaced out horizontally to fill the width */
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--border);
   flex-wrap: wrap;
 }
 
 .metaItem {
   display: flex;
   flex-direction: column;
-  gap: 0.22rem;
+  gap: 0.5rem;
 }
 
 .metaLabel {
-  font-size: 0.66rem;
-  letter-spacing: 0.1em;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
+  font-weight: 700;
 }
 
 .metaVal {
   font-family: var(--mono);
-  font-size: 0.92rem;
-  font-weight: 400;
+  font-size: 1.2rem;
+  /* Larger numbers for sub-stats */
+  font-weight: 500;
 }
 
 /* Range picker */
@@ -100,12 +135,9 @@
   display: flex;
   gap: 0.2rem;
   background: var(--surface);
-  padding: 0.28rem;
-  border-radius: 10px;
+  padding: 0.3rem;
+  border-radius: 12px;
   border: 1px solid var(--border);
-  align-self: flex-start;
-  margin-top: 0.5rem;
-  flex-shrink: 0;
 }
 
 .rangeBtn,
@@ -113,15 +145,42 @@
   background: none;
   border: none;
   font-family: var(--mono);
-  font-size: 0.7rem;
-  font-weight: 500;
-  padding: 0.28rem 0.62rem;
-  border-radius: 7px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 9px;
   cursor: pointer;
-  transition: all 0.18s;
-  letter-spacing: 0.05em;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.rangeBtn   { color: var(--muted); }
-.rangeBtn:hover { color: var(--text); }
-.rangeActive { color: var(--accent); background: var(--surface3); }
+.rangeBtn {
+  color: var(--muted);
+}
+
+.rangeBtn:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.rangeActive {
+  color: var(--accent);
+  background: var(--surface3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .value {
+    font-size: 2.8rem;
+  }
+
+  .meta {
+    gap: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+} 
