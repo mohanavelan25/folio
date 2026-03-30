@@ -1,0 +1,127 @@
+.hero {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 2.5rem 2rem 0;
+  max-width: 1400px;
+  margin: 0 auto;
+  gap: 2rem;
+}
+
+.label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.45rem;
+}
+
+.value {
+  /* font-family: var(--mono); */
+  font-size: 2.5rem;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  line-height: 1;
+}
+
+.currency {
+  font-size: 1.7rem;
+  color: var(--muted);
+  font-weight: 300;
+  margin-right: 0.15rem;
+}
+
+.change {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.7rem;
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.up   { color: var(--green); }
+.down { color: var(--red); }
+.neg  { color: var(--red); }
+.pos  { color: var(--green); }
+.neutral { color: var(--text); }
+
+.badge {
+  font-size: 0.7rem;
+  padding: 0.18rem 0.55rem;
+  border-radius: 20px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.up .badge   { background: rgba(45,212,160,0.12); color: var(--green); }
+.down .badge { background: rgba(240,90,110,0.12); color: var(--red); }
+
+.sub {
+  font-size: 0.73rem;
+  color: var(--muted);
+  font-family: var(--font);
+  font-weight: 400;
+}
+
+.meta {
+  display: flex;
+  gap: 2.5rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.metaItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.22rem;
+}
+
+.metaLabel {
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.metaVal {
+  font-family: var(--mono);
+  font-size: 0.92rem;
+  font-weight: 400;
+}
+
+/* Range picker */
+.rangeWrap {
+  display: flex;
+  gap: 0.2rem;
+  background: var(--surface);
+  padding: 0.28rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  align-self: flex-start;
+  margin-top: 0.5rem;
+  flex-shrink: 0;
+}
+
+.rangeBtn,
+.rangeActive {
+  background: none;
+  border: none;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 0.28rem 0.62rem;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.18s;
+  letter-spacing: 0.05em;
+}
+
+.rangeBtn   { color: var(--muted); }
+.rangeBtn:hover { color: var(--text); }
+.rangeActive { color: var(--accent); background: var(--surface3); }

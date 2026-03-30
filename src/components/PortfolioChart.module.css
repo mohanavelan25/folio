@@ -1,0 +1,25 @@
+.wrap {
+  position: relative;
+  z-index: 1;
+  padding: 1.25rem 2rem 0;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.inner {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  height: 200px;
+  position: relative;
+  overflow: hidden;
+}
+
+.inner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(62,207,207,0.025) 0%, transparent 55%);
+  pointer-events: none;
+}
