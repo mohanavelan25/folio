@@ -1,19 +1,19 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
-import { DEFAULT_HOLDINGS, DEFAULT_ACTIVITY } from '../data/defaults';
+import { useState, useCallback, useEffect, useRef } from "react";
+import { DEFAULT_HOLDINGS, DEFAULT_ACTIVITY } from "../data/defaults";
 
 // ─── Storage keys ────────────────────────────────────────────────────────────
-const STORAGE_KEY    = 'folio_holdings';
-const ACTIVITY_KEY   = 'folio_activity';
-const LAST_FETCH_KEY = 'folio_last_fetch';
+const STORAGE_KEY = "folio_holdings";
+const ACTIVITY_KEY = "folio_activity";
+const LAST_FETCH_KEY = "folio_last_fetch";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
-const PROXY_BASE      = 'http://localhost:3001';  // set to '' if using direct fetch
-const USE_PROXY       = false;                    // flip to true when proxy is running
-const REFRESH_MS      = 60_000;                   // refresh every 60 seconds
-const MARKET_OPEN_H   = 9;                        // NSE opens at 09:15 IST
-const MARKET_OPEN_M   = 15;
-const MARKET_CLOSE_H  = 15;                       // NSE closes at 15:30 IST
-const MARKET_CLOSE_M  = 30;
+const PROXY_BASE = "http://localhost:3001"; // set to '' if using direct fetch
+const USE_PROXY = false; // flip to true when proxy is running
+const REFRESH_MS = 60_000; // refresh every 60 seconds
+const MARKET_OPEN_H = 9; // NSE opens at 09:15 IST
+const MARKET_OPEN_M = 15;
+const MARKET_CLOSE_H = 15; // NSE closes at 15:30 IST
+const MARKET_CLOSE_M = 30;
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 function load(key, fallback) {
@@ -26,7 +26,11 @@ function load(key, fallback) {
 }
 
 function save(key, value) {
-  try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* quota exceeded */ }
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    /* quota exceeded */
+  }
 }
 
 /**
@@ -34,14 +38,16 @@ function save(key, value) {
  */
 function isMarketHours() {
   const now = new Date();
-  const ist = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+  const ist = new Date(
+    now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }),
+  );
   const day = ist.getDay(); // 0=Sun, 6=Sat
   if (day === 0 || day === 6) return false;
 
   const h = ist.getHours();
   const m = ist.getMinutes();
   const mins = h * 60 + m;
-  const open  = MARKET_OPEN_H  * 60 + MARKET_OPEN_M;
+  const open = MARKET_OPEN_H * 60 + MARKET_OPEN_M;
   const close = MARKET_CLOSE_H * 60 + MARKET_CLOSE_M;
   return mins >= open && mins <= close;
 }
@@ -63,7 +69,7 @@ function isMarketHours() {
  */
 async function fetchYahooPrice(ticker) {
   // Suffixes to try in order: NSE first, then BSE, then bare (for crypto/global)
-  const suffixes = ['.NS', '.BO', ''];
+  const suffixes = [".NS", ".BO", ""];
   for (const suffix of suffixes) {
     try {
       const symbol = `${ticker}${suffix}`;
@@ -162,7 +168,7 @@ export async function searchMutualFund(query) {
   try {
     const res = await fetch(
       `https://api.mfapi.in/mf/search?q=${encodeURIComponent(query)}`,
-      { signal: AbortSignal.timeout(8000) }
+      { signal: AbortSignal.timeout(8000) },
     );
     if (!res.ok) return [];
     return await res.json();
@@ -194,13 +200,13 @@ export async function searchStock(query) {
     // This sidesteps CORS entirely during development.
     // In production, route through your Express proxy (USE_PROXY=true).
     const params = new URLSearchParams({
-      q:               query,
-      quotesCount:     '10',
-      newsCount:       '0',
-      listsCount:      '0',
-      enableFuzzyQuery:'false',
-      region:          'IN',
-      lang:            'en-IN',
+      q: query,
+      quotesCount: "10",
+      newsCount: "0",
+      listsCount: "0",
+      enableFuzzyQuery: "false",
+      region: "IN",
+      lang: "en-IN",
     });
 
     const url = USE_PROXY
@@ -217,43 +223,45 @@ export async function searchStock(query) {
     //   NSI  = NSE equities/ETFs
     //   BOM  = BSE equities
     //   NSE  = NSE indices (NIFTY 50 etc.)
-    const INDIAN_EXCHANGES = new Set(['NSI', 'BOM', 'NSE']);
+    const INDIAN_EXCHANGES = new Set(["NSI", "BOM", "NSE"]);
     // Quote types we care about (exclude MUTUALFUND — use MF tab for those)
-    const VALID_TYPES = new Set(['EQUITY', 'ETF', 'INDEX', 'FUTURE', 'OPTION']);
+    const VALID_TYPES = new Set(["EQUITY", "ETF", "INDEX", "FUTURE", "OPTION"]);
 
-    return quotes
-      .filter(q =>
-        INDIAN_EXCHANGES.has(q.exchange) &&
-        VALID_TYPES.has(q.quoteType)
-      )
-      .map(q => {
-        const cleanTicker = (q.symbol || '')
-          .replace(/\.NS$|\.BO$/, '')
-          .toUpperCase();
-        return {
-          symbol:   q.symbol,
-          ticker:   cleanTicker,
-          name:     q.longname || q.shortname || cleanTicker,
-          exchange: q.exchange,
-          type:     q.quoteType,
-          sector:   q.sector   ?? null,
-          industry: q.industry ?? null,
-        };
-      })
-      // Deduplicate by clean ticker — NSE preferred over BSE
-      .reduce((acc, cur) => {
-        const existing = acc.find(a => a.ticker === cur.ticker);
-        if (!existing) {
-          acc.push(cur);
-        } else if (cur.exchange === 'NSI' && existing.exchange !== 'NSI') {
-          // Replace BSE entry with NSE entry
-          acc[acc.indexOf(existing)] = cur;
-        }
-        return acc;
-      }, [])
-      .slice(0, 8);
+    return (
+      quotes
+        .filter(
+          (q) =>
+            INDIAN_EXCHANGES.has(q.exchange) && VALID_TYPES.has(q.quoteType),
+        )
+        .map((q) => {
+          const cleanTicker = (q.symbol || "")
+            .replace(/\.NS$|\.BO$/, "")
+            .toUpperCase();
+          return {
+            symbol: q.symbol,
+            ticker: cleanTicker,
+            name: q.longname || q.shortname || cleanTicker,
+            exchange: q.exchange,
+            type: q.quoteType,
+            sector: q.sector ?? null,
+            industry: q.industry ?? null,
+          };
+        })
+        // Deduplicate by clean ticker — NSE preferred over BSE
+        .reduce((acc, cur) => {
+          const existing = acc.find((a) => a.ticker === cur.ticker);
+          if (!existing) {
+            acc.push(cur);
+          } else if (cur.exchange === "NSI" && existing.exchange !== "NSI") {
+            // Replace BSE entry with NSE entry
+            acc[acc.indexOf(existing)] = cur;
+          }
+          return acc;
+        }, [])
+        .slice(0, 8)
+    );
   } catch (err) {
-    console.error('[searchStock] failed:', err);
+    console.error("[searchStock] failed:", err);
     return [];
   }
 }
@@ -268,7 +276,6 @@ export async function fetchSpotPrice(ticker) {
   return fetchYahooPrice(ticker);
 }
 
-
 /**
  * Master price fetcher — dispatches to the right API based on asset type.
  *
@@ -278,7 +285,7 @@ export async function fetchSpotPrice(ticker) {
  * Returns null on any error so callers can keep the last known price.
  */
 async function fetchPriceForHolding(holding) {
-  if (holding.type === 'mutual_fund') {
+  if (holding.type === "mutual_fund") {
     if (!holding.schemeCode) return null;
     return fetchMFNavPrice(holding.schemeCode);
   }
@@ -293,13 +300,13 @@ async function fetchPriceForHolding(holding) {
  */
 async function fetchAllPrices(holdings) {
   const results = await Promise.allSettled(
-    holdings.map(h => fetchPriceForHolding(h))
+    holdings.map((h) => fetchPriceForHolding(h)),
   );
   return Object.fromEntries(
     holdings.map((h, i) => [
       h.id,
-      results[i].status === 'fulfilled' ? results[i].value : null,
-    ])
+      results[i].status === "fulfilled" ? results[i].value : null,
+    ]),
   );
 }
 
@@ -307,9 +314,9 @@ async function fetchAllPrices(holdings) {
 
 function computeStats(holdings) {
   const totalValue = holdings.reduce((s, h) => s + h.qty * h.current, 0);
-  const totalCost  = holdings.reduce((s, h) => s + h.qty * h.avg,     0);
-  const totalPnl   = totalValue - totalCost;
-  const pnlPct     = totalCost > 0 ? (totalPnl / totalCost) * 100 : 0;
+  const totalCost = holdings.reduce((s, h) => s + h.qty * h.avg, 0);
+  const totalPnl = totalValue - totalCost;
+  const pnlPct = totalCost > 0 ? (totalPnl / totalCost) * 100 : 0;
 
   // Day P&L: use prevClose if available (set after first live fetch), else seed-based estimate
   const dayPnl = holdings.reduce((s, h) => {
@@ -317,17 +324,19 @@ function computeStats(holdings) {
       return s + h.qty * (h.current - h.prevClose);
     }
     // Fallback: seeded deterministic value so UI doesn't flicker before first fetch
-    const seed   = (h.id * 9301 + 49297) % 233280;
+    const seed = (h.id * 9301 + 49297) % 233280;
     const factor = (seed / 233280 - 0.45) * 0.018;
     return s + h.qty * h.current * factor;
   }, 0);
 
   const dayPct = totalValue > 0 ? (dayPnl / totalValue) * 100 : 0;
 
-  const sorted = [...holdings].map(h => ({
-    ...h,
-    _pct: h.avg > 0 ? ((h.current - h.avg) / h.avg) * 100 : 0,
-  })).sort((a, b) => b._pct - a._pct);
+  const sorted = [...holdings]
+    .map((h) => ({
+      ...h,
+      _pct: h.avg > 0 ? ((h.current - h.avg) / h.avg) * 100 : 0,
+    }))
+    .sort((a, b) => b._pct - a._pct);
 
   return {
     totalValue,
@@ -336,7 +345,7 @@ function computeStats(holdings) {
     pnlPct,
     dayPnl,
     dayPct,
-    best:  sorted[0]  ?? null,
+    best: sorted[0] ?? null,
     worst: sorted[sorted.length - 1] ?? null,
   };
 }
@@ -363,9 +372,13 @@ function computeStats(holdings) {
  *   refreshPrices  – () => Promise<void>  (manual refresh trigger)
  */
 export function usePortfolio() {
-  const [holdings,    setHoldings]    = useState(() => load(STORAGE_KEY,    DEFAULT_HOLDINGS));
-  const [activity,    setActivity]    = useState(() => load(ACTIVITY_KEY,   DEFAULT_ACTIVITY));
-  const [priceStatus, setPriceStatus] = useState('idle');
+  const [holdings, setHoldings] = useState(() =>
+    load(STORAGE_KEY, DEFAULT_HOLDINGS),
+  );
+  const [activity, setActivity] = useState(() =>
+    load(ACTIVITY_KEY, DEFAULT_ACTIVITY),
+  );
+  const [priceStatus, setPriceStatus] = useState("idle");
   const [lastUpdated, setLastUpdated] = useState(() => {
     const ts = localStorage.getItem(LAST_FETCH_KEY);
     return ts ? new Date(ts) : null;
@@ -392,32 +405,32 @@ export function usePortfolio() {
     const current = holdingsRef.current;
     if (current.length === 0) return;
 
-    setPriceStatus('loading');
+    setPriceStatus("loading");
     try {
       const priceMap = await fetchAllPrices(current);
 
       // Only update holdings where we got a valid new price
-      const updated = current.map(h => {
+      const updated = current.map((h) => {
         const newPrice = priceMap[h.id];
         if (newPrice != null && newPrice > 0 && newPrice !== h.current) {
           return {
             ...h,
-            current:   newPrice,
-            prevClose: h.current,   // store previous value as prevClose for day P&L
+            current: newPrice,
+            prevClose: h.current, // store previous value as prevClose for day P&L
           };
         }
         return h;
       });
 
       persistHoldings(updated);
-      setPriceStatus('success');
+      setPriceStatus("success");
 
       const now = new Date();
       setLastUpdated(now);
       save(LAST_FETCH_KEY, now.toISOString());
     } catch (err) {
-      console.error('[usePortfolio] refreshPrices failed:', err);
-      setPriceStatus('error');
+      console.error("[usePortfolio] refreshPrices failed:", err);
+      setPriceStatus("error");
     }
   }, [persistHoldings]);
 
@@ -440,87 +453,127 @@ export function usePortfolio() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── CRUD ─────────────────────────────────────────────────────────────────
-  const addHolding = useCallback((holdingData) => {
-    const newHolding = {
-      ...holdingData,
-      id:        Date.now(),
-      addedAt:   new Date().toISOString().split('T')[0],
-      prevClose: holdingData.current,
-    };
-
-    const newActivity = {
-      id:     Date.now() + 1,
-      kind:   'buy',
-      ticker: holdingData.ticker,
-      qty:    holdingData.qty,
-      price:  holdingData.current,
-      amount: null,
-      date:   'Just now',
-    };
-
-    const nextHoldings = [...holdingsRef.current, newHolding];
-    persistHoldings(nextHoldings);
-    persistActivity([newActivity, ...activity]);
-
-    // Immediately fetch a live price for the new holding
-    fetchPriceForHolding(newHolding).then(price => {
-      if (price && price > 0) {
-        setHoldings(prev => {
-          const updated = prev.map(h =>
-            h.id === newHolding.id ? { ...h, current: price, prevClose: price } : h
-          );
-          save(STORAGE_KEY, updated);
-          return updated;
-        });
-      }
-    });
-  }, [activity, persistHoldings, persistActivity]);
-
-  const removeHolding = useCallback((id) => {
-    const holding = holdingsRef.current.find(h => h.id === id);
-    persistHoldings(holdingsRef.current.filter(h => h.id !== id));
-
-    if (holding) {
-      const sellActivity = {
-        id:     Date.now(),
-        kind:   'sell',
-        ticker: holding.ticker,
-        qty:    holding.qty,
-        price:  holding.current,
-        amount: null,
-        date:   new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }),
+  const addHolding = useCallback(
+    (holdingData) => {
+      const newHolding = {
+        ...holdingData,
+        id: Date.now(),
+        addedAt: new Date().toISOString().split("T")[0],
+        prevClose: holdingData.current,
       };
-      persistActivity([sellActivity, ...activity]);
-    }
-  }, [activity, persistHoldings, persistActivity]);
 
-  const updateHolding = useCallback((id, patch) => {
-    persistHoldings(holdingsRef.current.map(h => h.id === id ? { ...h, ...patch } : h));
-  }, [persistHoldings]);
+      const newActivity = {
+        id: Date.now() + 1,
+        kind: "buy",
+        ticker: holdingData.ticker,
+        qty: holdingData.qty,
+        price: holdingData.current,
+        amount: null,
+        date: "Just now",
+      };
+
+      const nextHoldings = [...holdingsRef.current, newHolding];
+      persistHoldings(nextHoldings);
+      persistActivity([newActivity, ...activity]);
+
+      // Immediately fetch a live price for the new holding
+      fetchPriceForHolding(newHolding).then((price) => {
+        if (price && price > 0) {
+          setHoldings((prev) => {
+            const updated = prev.map((h) =>
+              h.id === newHolding.id
+                ? { ...h, current: price, prevClose: price }
+                : h,
+            );
+            save(STORAGE_KEY, updated);
+            return updated;
+          });
+        }
+      });
+    },
+    [activity, persistHoldings, persistActivity],
+  );
+
+  function editHolding(id, updates) {
+    setHoldings((prev) =>
+      prev.map((h) => (h.id === id ? { ...h, ...updates } : h)),
+    );
+  }
+
+  function addTransaction(tx, holdingId, updates) {
+    // Prepend to activity feed
+    setActivity((prev) => [tx, ...prev]);
+    // Apply the position update (same as editHolding)
+    setHoldings((prev) =>
+      prev.map((h) => (h.id === holdingId ? { ...h, ...updates } : h)),
+    );
+  }
+
+  const removeHolding = useCallback(
+    (id) => {
+      const holding = holdingsRef.current.find((h) => h.id === id);
+      persistHoldings(holdingsRef.current.filter((h) => h.id !== id));
+
+      if (holding) {
+        const sellActivity = {
+          id: Date.now(),
+          kind: "sell",
+          ticker: holding.ticker,
+          qty: holding.qty,
+          price: holding.current,
+          amount: null,
+          date: new Date().toLocaleDateString("en-IN", {
+            day: "numeric",
+            month: "short",
+          }),
+        };
+        persistActivity([sellActivity, ...activity]);
+      }
+    },
+    [activity, persistHoldings, persistActivity],
+  );
+
+  const updateHolding = useCallback(
+    (id, patch) => {
+      persistHoldings(
+        holdingsRef.current.map((h) => (h.id === id ? { ...h, ...patch } : h)),
+      );
+    },
+    [persistHoldings],
+  );
 
   /**
    * Manually override the current price for a holding.
    * Useful when live fetch fails and user wants to enter a price manually.
    */
-  const overridePrice = useCallback((id, price) => {
-    updateHolding(id, { current: price, manualPrice: true });
-  }, [updateHolding]);
+  const overridePrice = useCallback(
+    (id, price) => {
+      updateHolding(id, { current: price, manualPrice: true });
+    },
+    [updateHolding],
+  );
 
   /**
    * Add a dividend activity entry without changing holdings.
    */
-  const addDividend = useCallback((ticker, amount) => {
-    const divActivity = {
-      id:     Date.now(),
-      kind:   'div',
-      ticker,
-      qty:    null,
-      price:  null,
-      amount,
-      date:   new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }),
-    };
-    persistActivity([divActivity, ...activity]);
-  }, [activity, persistActivity]);
+  const addDividend = useCallback(
+    (ticker, amount) => {
+      const divActivity = {
+        id: Date.now(),
+        kind: "div",
+        ticker,
+        qty: null,
+        price: null,
+        amount,
+        date: new Date().toLocaleDateString("en-IN", {
+          day: "numeric",
+          month: "short",
+        }),
+      };
+      persistActivity([divActivity, ...activity]);
+    },
+    [activity, persistActivity],
+  );
 
   return {
     holdings,
@@ -535,5 +588,7 @@ export function usePortfolio() {
     overridePrice,
     addDividend,
     refreshPrices,
+    editHolding,
+    addTransaction,
   };
 }

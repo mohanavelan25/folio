@@ -2,7 +2,7 @@ import { TYPE_META } from '../data/defaults';
 import { fmt, fmtPct, sparkPath } from '../utils';
 import styles from './HoldingsTable.module.css';
 
-export default function HoldingsTable({ holdings, onRemove }) {
+export default function HoldingsTable({ holdings, onEdit }) {
   return (
     <div className={styles.wrap}>
       <div className={styles.header}>
@@ -22,13 +22,12 @@ export default function HoldingsTable({ holdings, onRemove }) {
               <th>Value</th>
               <th>P&amp;L</th>
               <th>Return</th>
-              {/* <th>Trend</th> */}
               <th></th>
             </tr>
           </thead>
           <tbody>
             {holdings.map(h => (
-              <HoldingRow key={h.id} holding={h} onRemove={onRemove} />
+              <HoldingRow key={h.id} holding={h} onEdit={onEdit} />
             ))}
           </tbody>
         </table>
@@ -42,14 +41,13 @@ export default function HoldingsTable({ holdings, onRemove }) {
   );
 }
 
-function HoldingRow({ holding: h, onRemove }) {
+function HoldingRow({ holding: h, onEdit }) {
   const val  = h.qty * h.current;
   const cost = h.qty * h.avg;
   const pnl  = val - cost;
   const pct  = cost > 0 ? (pnl / cost) * 100 : 0;
   const pos  = pnl >= 0;
   const tc   = TYPE_META[h.type] || TYPE_META.stock;
-  const path = sparkPath(h.id, pos);
 
   return (
     <tr className={styles.row}>
@@ -70,7 +68,7 @@ function HoldingRow({ holding: h, onRemove }) {
       <td className={`${styles.num} ${styles.bold}`}>{fmt(val)}</td>
       <td className={styles.num}>
         <span style={{ color: pos ? 'var(--green)' : 'var(--red)' }}>
-          {pos ? '+' : '-'}{fmt(pnl)}
+          {pos ? '+' : '-'}{fmt(Math.abs(pnl))}
         </span>
       </td>
       <td className={styles.num}>
@@ -78,15 +76,19 @@ function HoldingRow({ holding: h, onRemove }) {
           {pos ? '▲' : '▼'} {Math.abs(pct).toFixed(2)}%
         </span>
       </td>
-      {/* <td>
-        <svg viewBox="0 0 60 24" width="60" height="24" fill="none" className={styles.spark}>
-          <path d={path} stroke={pos ? 'var(--green)' : 'var(--red)'} strokeWidth="1.5"
-            strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </td> */}
       <td>
-        <button className={styles.removeBtn} onClick={() => onRemove(h.id)} title="Remove">
-          ×
+        <button
+          className={styles.editBtn}
+          onClick={() => onEdit(h)}
+          title="Edit position"
+        >
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+            <path
+              d="M9.5 2.5a1.414 1.414 0 0 1 2 2L4 12H2v-2L9.5 2.5z"
+              stroke="currentColor" strokeWidth="1.4"
+              strokeLinecap="round" strokeLinejoin="round"
+            />
+          </svg>
         </button>
       </td>
     </tr>

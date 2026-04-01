@@ -1,0 +1,327 @@
+/* ── Overlay & Modal ─────────────────────────────────────────────────────── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.72);
+  backdrop-filter: blur(10px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-xl);
+  padding: 1.75rem;
+  width: 100%;
+  max-width: 500px;
+  max-height: 92vh;
+  overflow-y: auto;
+  animation: scaleIn 0.22s ease both;
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.96) translateY(12px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0);    }
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.1rem;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+.modalTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+
+.modalSub {
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-top: 0.1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 280px;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 6px;
+  display: flex;
+  transition: color 0.15s, background 0.15s;
+  flex-shrink: 0;
+}
+.closeBtn:hover { color: var(--text); background: var(--surface2); }
+
+/* ── Snapshot bar ────────────────────────────────────────────────────────── */
+.snapshot {
+  display: flex;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+}
+
+.snapItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.65rem 0.85rem;
+  border-right: 1px solid var(--border);
+}
+.snapItem:last-child { border-right: none; }
+
+.snapLabel {
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.snapVal {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+/* ── Tabs ────────────────────────────────────────────────────────────────── */
+.tabs {
+  display: flex;
+  gap: 0;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.tab,
+.tabActive {
+  flex: 1;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font);
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 0.45rem 0.75rem;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+
+.tab       { color: var(--muted); }
+.tab:hover { color: var(--text); background: var(--surface3); }
+
+.tabActive {
+  color: var(--accent);
+  background: var(--surface3);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* ── Form grid ───────────────────────────────────────────────────────────── */
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem 1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.fullWidth { grid-column: 1 / -1; }
+
+.field label {
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.field input {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.85rem;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.18s;
+}
+.field input:focus { border-color: var(--accent); }
+
+.errMsg {
+  font-size: 0.62rem;
+  color: var(--red);
+  margin-top: 0.1rem;
+}
+
+/* ── Preview bar ─────────────────────────────────────────────────────────── */
+.preview {
+  display: flex;
+  margin-top: 1rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.prevItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+  padding: 0.6rem 0.85rem;
+  border-right: 1px solid var(--border);
+}
+.prevItem:last-child { border-right: none; }
+
+.prevLabel {
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.prevVal {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--text);
+}
+
+/* ── Dividend preview ────────────────────────────────────────────────────── */
+.divPreview {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding: 0.65rem 0.9rem;
+  background: rgba(245,200,66,0.07);
+  border: 1px solid rgba(245,200,66,0.18);
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  color: var(--gold);
+  font-family: var(--mono);
+}
+
+/* ── Transaction type pills ──────────────────────────────────────────────── */
+.txTypeRow {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.1rem;
+}
+
+.txPill {
+  flex: 1;
+  padding: 0.5rem 0;
+  border-radius: 8px;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  border: 1px solid var(--border2);
+  background: var(--surface2);
+  color: var(--muted);
+  transition: all 0.15s;
+}
+.txPill:hover { color: var(--text); border-color: var(--border2); }
+
+/* Active per-type colors */
+.txPillActive.buy  { background: rgba(45,212,160,0.12); border-color: var(--green);  color: var(--green); }
+.txPillActive.sell { background: rgba(240,90,110,0.12); border-color: var(--red);    color: var(--red); }
+.txPillActive.div  { background: rgba(245,200,66,0.12); border-color: var(--gold);   color: var(--gold); }
+
+/* ── Actions ─────────────────────────────────────────────────────────────── */
+.actions {
+  display: flex;
+  gap: 0.65rem;
+  margin-top: 1.3rem;
+}
+
+.deleteBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(240,90,110,0.08);
+  border: 1px solid rgba(240,90,110,0.2);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.9rem;
+  color: var(--red);
+  font-family: var(--font);
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.deleteBtn:hover { background: rgba(240,90,110,0.15); }
+
+.cancelBtn {
+  flex: 1;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  padding: 0.65rem;
+  color: var(--muted);
+  font-family: var(--font);
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.cancelBtn:hover { color: var(--text); }
+
+.saveBtn {
+  flex: 2;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 0.65rem;
+  color: #040e0e;
+  font-family: var(--font);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+}
+.saveBtn:hover:not(:disabled) { background: #5cdede; transform: translateY(-1px); }
+.saveBtn:disabled { opacity: 0.4; cursor: not-allowed; }
