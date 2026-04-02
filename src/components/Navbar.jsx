@@ -1,11 +1,7 @@
-import { useState } from 'react';
 import { useClock } from '../hooks/useClock';
 import styles from './Navbar.module.css';
 
-const TABS = ['Overview', 'Holdings', 'Analytics', 'Activity'];
-
-export default function Navbar({ onAdd, priceStatus, lastUpdated, isMarket, onRefresh }) {
-  const [activeTab, setActiveTab] = useState('Overview');
+export default function Navbar({ page, onNavigate, onAdd, priceStatus, lastUpdated, isMarket, onRefresh }) {
   const time = useClock();
 
   const statusLabel = {
@@ -29,21 +25,29 @@ export default function Navbar({ onAdd, priceStatus, lastUpdated, isMarket, onRe
     <nav className={styles.nav}>
       <div className={styles.logo}>Folio</div>
 
+      {/* Page tabs */}
       <ul className={styles.tabs}>
-        {TABS.map(t => (
-          <li key={t}>
-            <button
-              className={activeTab === t ? styles.active : ''}
-              onClick={() => setActiveTab(t)}
-            >
-              {t}
-            </button>
-          </li>
-        ))}
+        <li>
+          <button
+            className={page === 'portfolio' ? styles.active : ''}
+            onClick={() => onNavigate('portfolio')}
+          >Overview</button>
+        </li>
+        <li>
+          <button
+            className={page === 'budget' ? styles.active : ''}
+            onClick={() => onNavigate('budget')}
+          >
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none" style={{ marginRight: '0.3rem', verticalAlign: 'middle' }}>
+              <rect x="1" y="2.5" width="12" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.4"/>
+              <path d="M1 5.5h12M4 8.5h2M8 8.5h2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+            </svg>
+            Budget
+          </button>
+        </li>
       </ul>
 
       <div className={styles.right}>
-        {/* Live / Closed / Error status pill */}
         {statusLabel && (
           <div className={`${styles.statusPill} ${statusClass}`}>
             <span className={styles.statusDot} />
@@ -51,14 +55,10 @@ export default function Navbar({ onAdd, priceStatus, lastUpdated, isMarket, onRe
           </div>
         )}
 
-        {/* Last updated time */}
         {lastUpdatedStr && priceStatus !== 'loading' && (
-          <span className={styles.lastUpdated} title="Last price update">
-            {lastUpdatedStr}
-          </span>
+          <span className={styles.lastUpdated}>{lastUpdatedStr}</span>
         )}
 
-        {/* Manual refresh button */}
         <button
           className={`${styles.refreshBtn} ${priceStatus === 'loading' ? styles.spinning : ''}`}
           onClick={onRefresh}
@@ -66,10 +66,8 @@ export default function Navbar({ onAdd, priceStatus, lastUpdated, isMarket, onRe
           disabled={priceStatus === 'loading'}
         >
           <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
-            <path
-              d="M1 7A6 6 0 0 1 12.5 4M13 1v3h-3M13 7A6 6 0 0 1 1.5 10M1 13v-3h3"
-              stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
-            />
+            <path d="M1 7A6 6 0 0 1 12.5 4M13 1v3h-3M13 7A6 6 0 0 1 1.5 10M1 13v-3h3"
+              stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
 
@@ -77,7 +75,7 @@ export default function Navbar({ onAdd, priceStatus, lastUpdated, isMarket, onRe
 
         <button className={styles.addBtn} onClick={onAdd}>
           <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
-            <path d="M6 1v10M1 6h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+            <path d="M6 1v10M1 6h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
           </svg>
           Add Position
         </button>

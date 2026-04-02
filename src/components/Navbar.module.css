@@ -38,6 +38,8 @@
   border-radius: 7px;
   cursor: pointer;
   transition: color 0.18s, background 0.18s;
+  display: flex;
+  align-items: center;
 }
 
 .tabs button:hover {
@@ -77,15 +79,9 @@
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: background 0.18s, transform 0.18s;
-  letter-spacing: 0.02em;
 }
+.addBtn:hover { background: #5cdede; transform: translateY(-1px); }
 
-.addBtn:hover {
-  background: #5cdede;
-  transform: translateY(-1px);
-}
-
-/* ── Live status pill ── */
 .statusPill {
   display: flex;
   align-items: center;
@@ -99,45 +95,34 @@
 }
 
 .statusDot {
-  width: 6px;
-  height: 6px;
+  width: 6px; height: 6px;
   border-radius: 50%;
   flex-shrink: 0;
 }
 
 .statusLive    { background: rgba(45,212,160,0.12); color: var(--green); }
 .statusLive .statusDot { background: var(--green); box-shadow: 0 0 4px var(--green); animation: pulse 2s infinite; }
-
 .statusClosed  { background: rgba(107,122,138,0.12); color: var(--muted); }
 .statusClosed .statusDot { background: var(--muted); }
-
 .statusLoading { background: rgba(62,207,207,0.1);  color: var(--accent); }
 .statusLoading .statusDot { background: var(--accent); }
-
 .statusError   { background: rgba(240,90,110,0.12); color: var(--red); }
 .statusError .statusDot { background: var(--red); }
 
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.4; }
-}
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
 
-/* Last updated timestamp */
 .lastUpdated {
   font-family: var(--mono);
   font-size: 0.67rem;
   color: var(--muted);
-  letter-spacing: 0.03em;
 }
 
-/* Refresh button */
 .refreshBtn {
   background: var(--surface2);
   border: 1px solid var(--border2);
   border-radius: 7px;
   color: var(--muted);
-  width: 30px;
-  height: 30px;
+  width: 30px; height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -145,18 +130,8 @@
   transition: color 0.18s, background 0.18s;
   flex-shrink: 0;
 }
-
-.refreshBtn:hover:not(:disabled) {
-  color: var(--accent);
-  background: rgba(62,207,207,0.08);
-}
-
+.refreshBtn:hover:not(:disabled) { color: var(--accent); background: rgba(62,207,207,0.08); }
 .refreshBtn:disabled { opacity: 0.4; cursor: default; }
 
-.spinning svg {
-  animation: spin 0.9s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+.spinning svg { animation: spin 0.9s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }

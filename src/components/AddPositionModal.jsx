@@ -4,6 +4,7 @@ import styles from './AddPositionModal.module.css';
 
 const TYPES = [
   { value: 'stock',       label: 'Stock' },
+  { value: 'etf',         label: 'ETF' },
   { value: 'mutual_fund', label: 'Mutual Fund' },
   { value: 'bond',        label: 'Bond / FD' },
   { value: 'gold',        label: 'Gold / SGB' },
